@@ -1,11 +1,23 @@
+// src/screens/HomeScreen.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-// Home Screen Component
-const HomeScreen = ({ route, navigation }) => {
-    // const { username } = route.params; // Dynamic username can be passed from login or context
-    const userName = 'Nikesh'
+const HomeScreen = ({ navigation }) => {
+  const userName = 'Nikesh';
+  const courses = [
+    {
+      id: '1',
+      title: 'React Native Fundamentals',
+      description: 'Learn how to build mobile apps using React Native.',
+    },
+    {
+      id: '2',
+      title: 'Introduction to JavaScript',
+      description: 'Understand the basics of JavaScript and its syntax.',
+    },
+    // Add more courses here as needed
+  ];
 
   return (
     <View style={styles.container}>
@@ -33,24 +45,18 @@ const HomeScreen = ({ route, navigation }) => {
         placeholderTextColor="#888"
       />
 
-      {/* Courses or Tasks List */}
+      {/* Courses List */}
       <View style={styles.courseList}>
-        {/* Example course cards */}
-        <View style={styles.courseCard}>
-          <Text style={styles.courseTitle}>React Native Fundamentals</Text>
-          <Text style={styles.courseDescription}>
-            Learn how to build mobile apps using React Native.
-          </Text>
-        </View>
-
-        <View style={styles.courseCard}>
-          <Text style={styles.courseTitle}>Introduction to JavaScript</Text>
-          <Text style={styles.courseDescription}>
-            Understand the basics of JavaScript and its syntax.
-          </Text>
-        </View>
-
-        {/* Add more course cards as needed */}
+        {courses.map((course) => (
+          <TouchableOpacity 
+            key={course.id} 
+            style={styles.courseCard}
+            onPress={() => navigation.navigate('Detail', { course })} // Pass course data
+          >
+            <Text style={styles.courseTitle}>{course.title}</Text>
+            <Text style={styles.courseDescription}>{course.description}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       {/* Floating Action Button (FAB) */}
@@ -61,6 +67,7 @@ const HomeScreen = ({ route, navigation }) => {
   );
 };
 
+// Styles for Home Screen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
