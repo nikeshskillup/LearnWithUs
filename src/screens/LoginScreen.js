@@ -6,6 +6,18 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Function to save user actions
+  const saveUserAction = async (action) => {
+    try {
+      let actions = await AsyncStorage.getItem('userActions');
+      actions = actions ? JSON.parse(actions) : [];
+      actions.push(action);
+      await AsyncStorage.setItem('userActions', JSON.stringify(actions));
+    } catch (error) {
+      console.log('Error saving user action:', error);
+    }
+  };
+
   const handleLogin = async () => {
     // Validation
     if (!email || !password) {
@@ -17,6 +29,7 @@ const LoginScreen = ({ navigation }) => {
       const storedUserData = await AsyncStorage.getItem('userData');
       if (!storedUserData) {
         Alert.alert('Error', 'No user data found! Please sign up first.');
+        saveUserAction({ email, status: 'failed', reason: 'No user data found' });
         return;
       }
 
@@ -24,16 +37,17 @@ const LoginScreen = ({ navigation }) => {
 
       if (email === storedEmail && password === storedPassword) {
         Alert.alert('Success', 'Login successful!');
+        saveUserAction({ email, status: 'success', timestamp: new Date().toISOString() });
         navigation.navigate('Home'); // Navigate to the Home screen
       } else {
         Alert.alert('Error', 'Invalid email or password!');
+        saveUserAction({ email, status: 'failed', reason: 'Invalid credentials' });
       }
     } catch (error) {
       Alert.alert('Error', 'Failed to retrieve user data. Please try again!');
+      saveUserAction({ email, status: 'failed', reason: 'Error retrieving data' });
     }
   };
-
-  
 
   return (
     <View style={styles.container}>
